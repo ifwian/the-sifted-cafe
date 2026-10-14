@@ -21,7 +21,7 @@ function ask(question) {
   return new Promise((resolve) => rl.question(question, (answer) => { rl.close(); resolve(answer); }));
 }
 
-// Password question: characters are NOT shown while typing.
+// Password question: characters are masked with dots while typing.
 function askHidden(question) {
   if (!process.stdin.isTTY) return ask(question); // e.g. input piped in: fall back to a normal prompt
   return new Promise((resolve) => {
@@ -41,8 +41,15 @@ function askHidden(question) {
           return resolve(value);
         }
         if (ch === '\u0003') process.exit(130); // Ctrl+C
-        if (ch === '\u007f' || ch === '\b') value = value.slice(0, -1); // Backspace
-        else value += ch;
+        if (ch === '\u007f' || ch === '\b') {
+          if (value.length > 0) {
+            value = value.slice(0, -1);
+            process.stdout.write('\b \b');
+          }
+        } else if (!/[\u0000-\u001f]/.test(ch)) {
+          value += ch;
+          process.stdout.write('•');
+        }
       }
     };
     stdin.on('data', onData);

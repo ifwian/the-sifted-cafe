@@ -80,9 +80,9 @@ Leave the rest as is. **Never share `.env`.**
 npm run create-admin
 ```
 
-Type a username, then a password of at least 12 characters (the letters are hidden while typing)
-and repeat it. There is no default password. Run the same command again with the same username to
-reset a forgotten password.
+Type a username, then a password of at least 12 characters (each character appears as a `•` dot
+while typing) and repeat it. There is no default password. Run the same command again with the same
+username to reset a forgotten password.
 
 ## 7. Start the server
 
