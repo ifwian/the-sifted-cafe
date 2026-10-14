@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Staff reservations | The Sifted Cafe</title>
+  <link rel="icon" type="image/png" href="/images/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700;9..144,900&family=Inter:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body class="admin">
+  <a class="skip-link" href="#admin-main">Skip to main content</a>
+
+  <noscript><p class="boot-message">This page needs JavaScript. Please turn it on in your browser.</p></noscript>
+
+  <!-- Shown while we check whether the staff member is already signed in. -->
+  <div id="boot" class="boot-message" role="status">Loading&hellip;</div>
+
+  <!-- ================= SIGN-IN ================= -->
+  <main id="login-view" class="login-view" hidden>
+    <div class="login-card">
+      <img src="/images/logo-full.png" alt="The Sifted Cafe, cafe and bakery" width="900" height="564" class="login-logo">
+      <h1>Staff sign-in</h1>
+      <p class="login-sub">Reservation manager</p>
+
+      <form id="login-form" novalidate>
+        <div class="field">
+          <label for="login-username">Username</label>
+          <input id="login-username" name="username" type="text" autocomplete="username" maxlength="50" required>
+        </div>
+        <div class="field">
+          <label for="login-password">Password</label>
+          <input id="login-password" name="password" type="password" autocomplete="current-password" maxlength="200" required>
+        </div>
+        <div id="login-status" class="login-status" role="alert"></div>
+        <button id="login-submit" class="btn btn-primary btn-block" type="submit">Sign in</button>
+      </form>
+      <p class="login-back"><a href="/">Back to the website</a></p>
+    </div>
+  </main>
+
+  <!-- ================= RESERVATION MANAGER ================= -->
+  <div id="app-view" hidden>
+    <header class="admin-header">
+      <div class="admin-header-inner">
+        <a class="admin-brand" href="/admin">
+          <img src="/images/logo-wordmark.png" alt="the sifted" width="700" height="186">
+          <span>Reservations</span>
+        </a>
+        <div class="admin-header-actions">
+          <span class="admin-user">Signed in as <strong id="admin-username"></strong></span>
+          <a class="btn btn-outline btn-small" href="/">View website</a>
+          <button class="btn btn-primary btn-small" type="button" id="logout-button">Sign out</button>
+        </div>
+      </div>
+    </header>
+
+    <main id="admin-main" class="admin-main">
+      <h1>Reservations</h1>
+
+      <section aria-labelledby="summary-title">
+        <h2 id="summary-title" class="visually-hidden">Reservation counts by status</h2>
+        <div id="summary" class="summary"></div>
+      </section>
+
+      <section aria-labelledby="filter-title">
+        <h2 id="filter-title" class="visually-hidden">Search and filters</h2>
+        <form id="filters" class="filters" novalidate>
+          <div class="field filter-search">
+            <label for="f-search">Search</label>
+            <input id="f-search" type="search" placeholder="Name, phone, email or SC-00012" maxlength="100">
+          </div>
+          <div class="field">
+            <label for="f-status">Status</label>
+            <select id="f-status"><option value="">All statuses</option></select>
+          </div>
+          <div class="field">
+            <label for="f-branch">Branch</label>
+            <select id="f-branch"><option value="">All branches</option></select>
+          </div>
+          <div class="field">
+            <label for="f-from">Date from</label>
+            <input id="f-from" type="date">
+          </div>
+          <div class="field">
+            <label for="f-to">Date to</label>
+            <input id="f-to" type="date">
+          </div>
+          <div class="field">
+            <label for="f-sort">Sort by</label>
+            <select id="f-sort">
+              <option value="newest">Newest requests first</option>
+              <option value="upcoming">Reservation date: earliest first</option>
+              <option value="latest_date">Reservation date: latest first</option>
+            </select>
+          </div>
+          <div class="field filter-clear">
+            <button type="button" class="btn btn-outline btn-small" id="f-clear">Clear filters</button>
+          </div>
+        </form>
+      </section>
+
+      <div id="list-status" class="list-status" role="status" aria-live="polite"></div>
+
+      <div class="table-wrap">
+        <table id="reservations-table" class="res-table">
+          <caption class="visually-hidden">Reservation requests</caption>
+          <thead>
+            <tr>
+              <th scope="col">Ref</th>
+              <th scope="col">Guest</th>
+              <th scope="col">Date and time</th>
+              <th scope="col">Guests</th>
+              <th scope="col">Branch</th>
+              <th scope="col">Status</th>
+              <th scope="col">Requested</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="reservations-body"></tbody>
+        </table>
+      </div>
+
+      <nav id="pagination" class="pagination" aria-label="Pages"></nav>
+    </main>
+  </div>
+
+  <!-- ================= DIALOGS ================= -->
+
+  <dialog id="detail-dialog" class="dialog" aria-labelledby="detail-title">
+    <h2 id="detail-title">Reservation</h2>
+    <div id="detail-body"></div>
+    <div id="detail-status-actions" class="status-actions"></div>
+    <div class="dialog-actions">
+      <button type="button" class="btn btn-outline btn-small" id="detail-edit">Edit details</button>
+      <button type="button" class="btn btn-danger btn-small" id="detail-delete">Delete</button>
+      <button type="button" class="btn btn-outline btn-small" id="detail-close">Close</button>
+    </div>
+  </dialog>
+
+  <dialog id="edit-dialog" class="dialog dialog-wide" aria-labelledby="edit-title">
+    <h2 id="edit-title">Edit reservation</h2>
+    <form id="edit-form" novalidate>
+      <div class="edit-grid">
+        <div class="field span-2">
+          <label for="e-name">Full name</label>
+          <input id="e-name" name="customer_name" type="text" maxlength="100" required>
+          <p class="field-error" id="e-err-customer_name"></p>
+        </div>
+        <div class="field">
+          <label for="e-phone">Contact number</label>
+          <input id="e-phone" name="phone" type="tel" maxlength="20" required>
+          <p class="field-error" id="e-err-phone"></p>
+        </div>
+        <div class="field">
+          <label for="e-email">Email <span class="optional">(optional)</span></label>
+          <input id="e-email" name="email" type="email" maxlength="254">
+          <p class="field-error" id="e-err-email"></p>
+        </div>
+        <div class="field">
+          <label for="e-branch">Branch</label>
+          <select id="e-branch" name="branch" required></select>
+          <p class="field-error" id="e-err-branch"></p>
+        </div>
+        <div class="field">
+          <label for="e-guests">Guests</label>
+          <input id="e-guests" name="guests" type="number" min="1" step="1" required>
+          <p class="field-error" id="e-err-guests"></p>
+        </div>
+        <div class="field">
+          <label for="e-date">Date</label>
+          <input id="e-date" name="reservation_date" type="date" required>
+          <p class="field-error" id="e-err-reservation_date"></p>
+        </div>
+        <div class="field">
+          <label for="e-time">Time</label>
+          <input id="e-time" name="reservation_time" type="time" required>
+          <p class="field-error" id="e-err-reservation_time"></p>
+        </div>
+        <div class="field span-2">
+          <label for="e-status">Status</label>
+          <select id="e-status" name="status" required></select>
+          <p class="field-error" id="e-err-status"></p>
+        </div>
+        <div class="field span-2">
+          <label for="e-requests">Special requests <span class="optional">(from the customer)</span></label>
+          <textarea id="e-requests" name="special_requests" rows="2" maxlength="500"></textarea>
+          <p class="field-error" id="e-err-special_requests"></p>
+        </div>
+        <div class="field span-2">
+          <label for="e-notes">Staff notes <span class="optional">(private, never shown to customers)</span></label>
+          <textarea id="e-notes" name="admin_notes" rows="2" maxlength="1000"></textarea>
+          <p class="field-error" id="e-err-admin_notes"></p>
+        </div>
+      </div>
+      <div id="edit-status" class="form-status" role="alert"></div>
+      <div class="dialog-actions">
+        <button type="submit" class="btn btn-primary btn-small" id="edit-save">Save changes</button>
+        <button type="button" class="btn btn-outline btn-small" id="edit-cancel">Cancel</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="delete-dialog" class="dialog" aria-labelledby="delete-title">
+    <h2 id="delete-title">Delete this reservation?</h2>
+    <p id="delete-text"></p>
+    <p><strong>This permanently removes the record and cannot be undone.</strong></p>
+    <div id="delete-status" class="form-status" role="alert"></div>
+    <div class="dialog-actions">
+      <button type="button" class="btn btn-outline btn-small" id="delete-cancel">Keep it</button>
+      <button type="button" class="btn btn-danger btn-small" id="delete-confirm">Yes, delete</button>
+    </div>
+  </dialog>
+
+  <div id="toasts" class="toasts" role="status" aria-live="polite"></div>
+
+  <script src="/js/api.js" defer></script>
+  <script src="/js/admin.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Sifted Cafe | Cafe &amp; Bakery</title>
+  <meta name="description" content="The Sifted Cafe is a cafe and bakery with branches in Calamba and Cabuyao, Laguna. See the featured menu, take a look inside, and request a table.">
+  <meta name="theme-color" content="#eadec7">
+
+  <link rel="icon" type="image/png" href="/images/favicon.png">
+  <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+
+  <!-- Fonts from the existing Sifted Cafe project (Fraunces for headings, Inter for text).
+       If they cannot load, the page falls back to Georgia / system fonts. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700;9..144,900&family=Inter:wght@400;500;600;700&display=swap">
+
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <!-- DRAFT BANNER: delete this whole <div> once the owner has confirmed the details marked TBC. -->
+  <div class="draft-banner" role="note">
+    School project draft. Details marked <span class="tbc">TBC</span> are waiting for the owner to confirm them.
+  </div>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="#top" aria-label="The Sifted Cafe, back to top">
+        <img src="/images/logo-wordmark.png" alt="the sifted" width="700" height="186">
+        <span class="brand-tag">cafe &amp; bakery</span>
+      </a>
+
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">
+        <span class="visually-hidden">Menu</span>
+        <span class="nav-toggle-bars" aria-hidden="true"></span>
+      </button>
+
+      <nav id="site-nav" class="site-nav" aria-label="Main">
+        <ul>
+          <li><a href="#about">About</a></li>
+          <li><a href="#menu">Menu</a></li>
+          <li><a href="#gallery">Gallery</a></li>
+          <li><a href="#visit">Visit us</a></li>
+        </ul>
+        <a class="btn btn-primary btn-small" href="#reserve">Reserve a table</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- ================= HERO + RESERVATION ================= -->
+    <section id="top" class="hero on-dark" aria-labelledby="hero-title">
+      <div class="container hero-grid">
+        <div class="hero-copy">
+          <img class="hero-img" src="/images/drinks.jpg" width="1800" height="1800" fetchpriority="high"
+               alt="Six iced and layered coffee drinks in glass tumblers on a glass table, beside a glowing amber lamp.">
+          <span class="eyebrow">Cafe &amp; bakery &middot; Calamba &middot; Cabuyao</span>
+          <h1 id="hero-title">Good coffee. Good food. Good people.</h1>
+          <p class="hero-lead">A cozy space to slow down, sip something good, and enjoy the moment.</p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#reserve">Reserve a table</a>
+            <a class="btn btn-outline-light" href="#menu">See the featured menu</a>
+          </div>
+        </div>
+
+        <section id="reserve" class="reserve-card" aria-labelledby="reserve-title">
+          <h2 id="reserve-title">Reserve a table</h2>
+          <p class="reserve-note">Send us a request. It is <strong>not a confirmed booking</strong> until our team contacts you.</p>
+
+          <form id="reservation-form" novalidate>
+            <div class="form-grid">
+              <div class="field span-2">
+                <label for="res-name">Full name</label>
+                <input id="res-name" name="customer_name" type="text" autocomplete="name" maxlength="100" required aria-describedby="err-customer_name">
+                <p class="field-error" id="err-customer_name"></p>
+              </div>
+
+              <div class="field">
+                <label for="res-phone">Contact number</label>
+                <input id="res-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" maxlength="20" required aria-describedby="err-phone">
+                <p class="field-error" id="err-phone"></p>
+              </div>
+
+              <div class="field">
+                <label for="res-email">Email <span class="optional">(optional)</span></label>
+                <input id="res-email" name="email" type="email" autocomplete="email" maxlength="254" aria-describedby="err-email">
+                <p class="field-error" id="err-email"></p>
+              </div>
+
+              <div class="field">
+                <label for="res-branch">Branch</label>
+                <select id="res-branch" name="branch" required aria-describedby="err-branch">
+                  <option value="">Select a branch</option>
+                </select>
+                <p class="field-error" id="err-branch"></p>
+              </div>
+
+              <div class="field">
+                <label for="res-guests">Guests</label>
+                <input id="res-guests" name="guests" type="number" inputmode="numeric" min="1" step="1" required aria-describedby="err-guests">
+                <p class="field-error" id="err-guests"></p>
+              </div>
+
+              <div class="field">
+                <label for="res-date">Date</label>
+                <input id="res-date" name="reservation_date" type="date" required aria-describedby="err-reservation_date">
+                <p class="field-error" id="err-reservation_date"></p>
+              </div>
+
+              <div class="field">
+                <label for="res-time">Time</label>
+                <select id="res-time" name="reservation_time" required aria-describedby="time-hint err-reservation_time">
+                  <option value="">Select a time</option>
+                </select>
+                <p class="field-error" id="err-reservation_time"></p>
+              </div>
+
+              <p class="field-hint span-2" id="time-hint">Pick a branch and a date to see the request times for that branch.</p>
+
+              <div class="field span-2">
+                <label for="res-requests">Special requests <span class="optional">(optional)</span></label>
+                <textarea id="res-requests" name="special_requests" rows="2" maxlength="500" aria-describedby="err-special_requests"></textarea>
+                <p class="field-error" id="err-special_requests"></p>
+              </div>
+
+              <!-- Honeypot: hidden from real visitors. Bots that fill it are rejected by the server. -->
+              <div class="hp" aria-hidden="true">
+                <label for="res-website">Leave this field empty</label>
+                <input id="res-website" name="website" type="text" tabindex="-1" autocomplete="off">
+              </div>
+            </div>
+
+            <div id="form-status" class="form-status" role="status" aria-live="polite" tabindex="-1"></div>
+            <button id="reservation-submit" class="btn btn-primary btn-block" type="submit">Send reservation request</button>
+          </form>
+
+          <div id="reservation-success" class="reservation-success" hidden tabindex="-1">
+            <h3>Request received</h3>
+            <p id="success-message"></p>
+            <dl id="success-details" class="success-details"></dl>
+            <button id="new-request" class="btn btn-outline" type="button">Make another request</button>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <!-- ================= ABOUT ================= -->
+    <section id="about" class="section" aria-labelledby="about-title">
+      <div class="container about-grid">
+        <figure class="photo-frame">
+          <img src="/images/cafe-interior.jpg" width="975" height="1300" loading="lazy"
+               alt="Inside The Sifted Cafe: a yellow paper lantern hangs over a long wooden table, and the lit 'the sifted cafe' sign hangs above the counter.">
+        </figure>
+        <div class="about-copy">
+          <span class="eyebrow">Our story</span>
+          <h2 id="about-title">More than just coffee.</h2>
+          <p>A cozy neighborhood cafe made for slow mornings, good conversations, and cups worth coming back for. Whether you are here to relax, meet friends, get some work done, or enjoy a good meal, there is a seat with your name on it.</p>
+
+          <ul class="values">
+            <li>
+              <h3>Thoughtfully roasted</h3>
+              <p>Beans sourced and roasted with care, brewed the way they deserve to be.</p>
+            </li>
+            <li>
+              <h3>Made fresh daily</h3>
+              <p>Pastries and food prepared fresh each morning.</p>
+            </li>
+            <li>
+              <h3>A place to stay awhile</h3>
+              <p>Comfortable seating and a calm atmosphere, whether you are working or catching up.</p>
+            </li>
+            <li>
+              <h3>Warm, familiar service</h3>
+              <p>A team that genuinely enjoys having you here.</p>
+            </li>
+          </ul>
+          <p class="tbc-note"><span class="tbc">TBC</span> This wording was carried over from the existing project. The owner should confirm it.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= FEATURED MENU ================= -->
+    <section id="menu" class="section section-alt" aria-labelledby="menu-title">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">From the counter</span>
+          <h2 id="menu-title">Featured menu</h2>
+          <p class="tbc-note"><span class="tbc">TBC</span> Sample items carried over from the existing project. The real menu and prices are waiting for the owner to confirm them, so no prices are shown.</p>
+        </div>
+
+        <ul class="menu-grid">
+          <li class="menu-card menu-coffee">
+            <span class="menu-category">Coffee</span>
+            <h3>Spanish Latte</h3>
+            <p>Smooth espresso blended with creamy milk and a touch of sweetness.</p>
+          </li>
+          <li class="menu-card menu-coffee">
+            <span class="menu-category">Coffee</span>
+            <h3>Iced Caramel Macchiato</h3>
+            <p>Espresso layered over cold milk with a swirl of caramel.</p>
+          </li>
+          <li class="menu-card menu-green">
+            <span class="menu-category">Non-coffee</span>
+            <h3>Matcha Latte</h3>
+            <p>Stone-ground matcha whisked with steamed milk.</p>
+          </li>
+          <li class="menu-card menu-food">
+            <span class="menu-category">Food</span>
+            <h3>Truffle Mushroom Pasta</h3>
+            <p>Creamy pasta tossed with mushrooms and truffle oil.</p>
+          </li>
+          <li class="menu-card menu-bakery">
+            <span class="menu-category">Pastries</span>
+            <h3>Classic Croissant</h3>
+            <p>Buttery, flaky croissant baked fresh every morning.</p>
+          </li>
+          <li class="menu-card menu-bakery">
+            <span class="menu-category">Desserts</span>
+            <h3>Basque Burnt Cheesecake</h3>
+            <p>Rich, caramelized cheesecake with a soft, jammy center.</p>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ================= GALLERY ================= -->
+    <section id="gallery" class="section" aria-labelledby="gallery-title">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">Take a look inside</span>
+          <h2 id="gallery-title">Gallery</h2>
+        </div>
+
+        <ul class="gallery-grid" id="gallery-grid">
+          <li><button type="button" class="gallery-item" data-full="/images/drinks.jpg">
+            <img src="/images/drinks.jpg" width="1800" height="1800" loading="lazy"
+                 alt="Six iced and layered coffee drinks in glass tumblers on a glass table, beside a glowing amber lamp.">
+          </button></li>
+          <li><button type="button" class="gallery-item" data-full="/images/cafe-interior.jpg">
+            <img src="/images/cafe-interior.jpg" width="975" height="1300" loading="lazy"
+                 alt="A yellow paper lantern hangs over a long wooden table; the lit 'the sifted cafe' sign hangs above the counter.">
+          </button></li>
+          <li><button type="button" class="gallery-item" data-full="/images/cafe-counter.jpg">
+            <img src="/images/cafe-counter.jpg" width="975" height="1300" loading="lazy"
+                 alt="The counter with the red 'the sifted cafe' sign, a wood-panelled wall, an espresso machine and a round metal table in front.">
+          </button></li>
+          <li><button type="button" class="gallery-item" data-full="/images/record-shelf.jpg">
+            <img src="/images/record-shelf.jpg" width="975" height="1300" loading="lazy"
+                 alt="A wooden wall shelf of vinyl records above a yellow chair, a red chair, and a turntable with a yellow typewriter.">
+          </button></li>
+          <li><button type="button" class="gallery-item" data-full="/images/seating-corner.jpg">
+            <img src="/images/seating-corner.jpg" width="975" height="1300" loading="lazy"
+                 alt="A seating corner with a glass table, mixed vintage chairs and a glowing orange wall lamp beside the coffee bar.">
+          </button></li>
+          <li><button type="button" class="gallery-item" data-full="/images/wall-calendar.jpg">
+            <img src="/images/wall-calendar.jpg" width="975" height="1300" loading="lazy"
+                 alt="A green magnetic wall calendar next to a round, glowing orange lamp.">
+          </button></li>
+        </ul>
+      </div>
+    </section>
+
+    <dialog id="lightbox" class="lightbox" aria-label="Photo viewer">
+      <img id="lightbox-img" src="" alt="">
+      <p id="lightbox-caption" class="lightbox-caption"></p>
+      <div class="lightbox-controls">
+        <button type="button" class="btn btn-outline-light btn-small" id="lightbox-prev">Previous</button>
+        <button type="button" class="btn btn-outline-light btn-small" id="lightbox-next">Next</button>
+        <button type="button" class="btn btn-primary btn-small" id="lightbox-close">Close</button>
+      </div>
+    </dialog>
+
+    <!-- ================= VISIT US ================= -->
+    <section id="visit" class="section section-alt" aria-labelledby="visit-title">
+      <div class="container visit-grid">
+        <div class="visit-info">
+          <span class="eyebrow">Find us</span>
+          <h2 id="visit-title">Visit us</h2>
+
+          <div class="branch-card">
+            <h3>Calamba <span class="tbc">TBC</span></h3>
+            <address>
+              Unit 2, Pabs2men Building, Chipeco Ave, Brgy. 3,<br>
+              Calamba, 4027 Laguna, Philippines
+            </address>
+            <p class="hours" data-hours-for="calamba">Opening hours: loading&hellip;</p>
+            <a class="btn btn-outline btn-small" target="_blank" rel="noopener"
+               href="https://www.google.com/maps/search/?api=1&amp;query=Unit%202%2C%20Pabs2men%20Building%2C%20Chipeco%20Ave%2C%20Brgy.%203%2C%20Calamba%2C%204027%20Laguna%2C%20Philippines">
+              Get directions<span class="visually-hidden"> (opens in a new tab)</span>
+            </a>
+          </div>
+
+          <div class="branch-card">
+            <h3>Cabuyao <span class="tbc">TBC</span></h3>
+            <p>Street address: to be confirmed by the owner.</p>
+            <p class="hours" data-hours-for="cabuyao">Opening hours: loading&hellip;</p>
+          </div>
+
+          <div class="branch-card">
+            <h3>Get in touch</h3>
+            <p>Message us on social media. Phone number and email: <span class="tbc">TBC</span></p>
+            <p class="social-row">
+              <a href="https://www.facebook.com/TheSiftedCafe" target="_blank" rel="noopener">Facebook<span class="visually-hidden"> (opens in a new tab)</span></a>
+              <a href="https://www.instagram.com/thesiftedcafe" target="_blank" rel="noopener">Instagram<span class="visually-hidden"> (opens in a new tab)</span></a>
+            </p>
+          </div>
+        </div>
+
+        <figure class="photo-frame visit-photo">
+          <img src="/images/cafe-counter.jpg" width="975" height="1300" loading="lazy"
+               alt="The red 'the sifted cafe' sign above the wood-panelled counter, which is how you will recognise us.">
+        </figure>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer on-dark">
+    <div class="container footer-grid">
+      <div>
+        <p class="footer-brand">the sifted <span>cafe &amp; bakery</span></p>
+        <p class="footer-small">Good coffee. Good food. Good people.</p>
+      </div>
+      <nav aria-label="Footer">
+        <h2 class="footer-heading">Explore</h2>
+        <ul>
+          <li><a href="#about">About</a></li>
+          <li><a href="#menu">Featured menu</a></li>
+          <li><a href="#gallery">Gallery</a></li>
+          <li><a href="#visit">Visit us</a></li>
+          <li><a href="#reserve">Reserve a table</a></li>
+        </ul>
+      </nav>
+      <div>
+        <h2 class="footer-heading">Follow us</h2>
+        <ul>
+          <li><a href="https://www.facebook.com/TheSiftedCafe" target="_blank" rel="noopener">Facebook<span class="visually-hidden"> (opens in a new tab)</span></a></li>
+          <li><a href="https://www.instagram.com/thesiftedcafe" target="_blank" rel="noopener">Instagram<span class="visually-hidden"> (opens in a new tab)</span></a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="container footer-bottom">
+      <p>&copy; <span id="year">2026</span> The Sifted Cafe. A student project.</p>
+      <p><a href="/admin">Staff login</a></p>
+    </div>
+  </footer>
+
+  <script src="/js/api.js" defer></script>
+  <script src="/js/main.js" defer></script>
+  <script src="/js/reservation.js" defer></script>
+</body>
+</html>

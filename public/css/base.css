@@ -1,0 +1,232 @@
+/* =====================================================================
+   The Sifted Cafe - shared design system (used by the website AND the admin page)
+   Colours and fonts come from the existing TheSiftedCafe project:
+   cream background, royal-blue text, red brand colour, ochre accent.
+   ===================================================================== */
+
+:root {
+  /* Brand colours */
+  --cream: #eadec7;
+  --cream-light: #f5eee0;
+  --paper: #fbf7ee;
+  --blue: #1b2b85;
+  --blue-dark: #121c5e;
+  --red: #c82a1d;
+  --maroon: #7a130c;      /* used for small red text: passes contrast on cream */
+  --ochre: #e08a27;
+  --ochre-dark: #b36f1d;
+  --green: #1b6a3b;
+  --yellow: #ffcd00;
+  --white: #ffffff;
+
+  /* Text */
+  --ink: var(--blue);
+  --ink-soft: #3b4690;
+  --line: rgba(27, 43, 133, 0.28);
+
+  /* Type */
+  --font-display: "Fraunces", Georgia, "Times New Roman", serif;
+  --font-body: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+
+  /* Shape */
+  --radius: 10px;
+  --radius-lg: 18px;
+  --shadow: 0 10px 30px -14px rgba(18, 28, 94, 0.45);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+img { max-width: 100%; display: block; }
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 1.12;
+  letter-spacing: -0.01em;
+  margin: 0 0 0.5em;
+  color: var(--ink);
+}
+
+p { margin: 0 0 1em; }
+a { color: inherit; }
+
+/* ---------- Accessibility helpers ---------- */
+
+:focus-visible {
+  outline: 3px solid var(--blue);
+  outline-offset: 2px;
+}
+
+.on-dark :focus-visible,
+.on-dark:focus-visible {
+  outline-color: var(--yellow);
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  margin: -1px; padding: 0; border: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+
+.skip-link {
+  position: absolute;
+  left: 12px; top: -60px;
+  z-index: 1000;
+  background: var(--blue);
+  color: var(--white);
+  padding: 10px 16px;
+  border-radius: var(--radius);
+  font-weight: 600;
+}
+.skip-link:focus { top: 12px; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ---------- Layout ---------- */
+
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin-inline: auto;
+  padding-inline: 20px;
+}
+
+.eyebrow {
+  display: block;
+  margin-bottom: 0.6rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--maroon);
+}
+.on-dark .eyebrow { color: var(--yellow); }
+
+/* ---------- Buttons ---------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 46px;
+  padding: 0 24px;
+  border: 2px solid transparent;
+  border-radius: 999px;
+  font: inherit;
+  font-weight: 600;
+  line-height: 1.2;
+  text-decoration: none;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.btn-primary { background: var(--red); border-color: var(--red); color: var(--white); }
+.btn-primary:hover { background: var(--maroon); border-color: var(--maroon); }
+
+.btn-outline { background: transparent; border-color: var(--blue); color: var(--blue); }
+.btn-outline:hover { background: var(--blue); color: var(--white); }
+
+.btn-outline-light { background: transparent; border-color: var(--white); color: var(--white); }
+.btn-outline-light:hover { background: var(--white); color: var(--blue); }
+
+.btn-danger { background: var(--maroon); border-color: var(--maroon); color: var(--white); }
+.btn-danger:hover { background: #5a0e09; border-color: #5a0e09; }
+
+.btn-small { min-height: 38px; padding: 0 16px; font-size: 0.9rem; }
+
+.btn[disabled], .btn[aria-disabled="true"] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ---------- Forms ---------- */
+
+.field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+
+.field label, .field .label {
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+.field .optional { font-weight: 400; color: var(--ink-soft); }
+
+.field input,
+.field select,
+.field textarea {
+  width: 100%;
+  min-height: 46px;
+  padding: 10px 12px;
+  border: 2px solid var(--blue);
+  border-radius: 8px;
+  background: var(--white);
+  color: #111a52;
+  font: inherit;
+  font-size: 1rem;   /* 16px stops iOS from zooming into the field */
+}
+.field textarea { min-height: 84px; resize: vertical; }
+
+.field input:focus-visible,
+.field select:focus-visible,
+.field textarea:focus-visible {
+  outline: 3px solid var(--ochre);
+  outline-offset: 1px;
+}
+
+.field.has-error input,
+.field.has-error select,
+.field.has-error textarea {
+  border-color: var(--red);
+  background: #fff5f3;
+}
+
+.field-error {
+  margin: 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--maroon);
+}
+.field-error:empty { display: none; }
+
+.field-hint { margin: 0; font-size: 0.8rem; color: var(--ink-soft); }
+
+/* ---------- Messages ---------- */
+
+.alert {
+  padding: 12px 14px;
+  border: 2px solid var(--blue);
+  border-left-width: 8px;
+  border-radius: var(--radius);
+  background: var(--paper);
+  font-size: 0.95rem;
+}
+.alert-success { border-color: var(--green); background: #eaf5ec; }
+.alert-error   { border-color: var(--maroon); background: #fdeeea; }
+.alert strong  { display: block; }
+
+/* Make sure the HTML "hidden" attribute always wins over other display rules. */
+[hidden] { display: none !important; }

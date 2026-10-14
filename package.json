@@ -1,0 +1,24 @@
+{
+  "name": "the-sifted-cafe",
+  "version": "1.0.0",
+  "description": "The Sifted Cafe website with a reservation form and an admin reservation manager (Express + MySQL). School project.",
+  "main": "server/server.js",
+  "private": true,
+  "engines": {
+    "node": ">=18.18.0"
+  },
+  "scripts": {
+    "start": "node server/server.js",
+    "dev": "node --watch server/server.js",
+    "create-admin": "node scripts/create-admin.js",
+    "test": "node scripts/run-tests.js tests/unit",
+    "test:api": "node scripts/run-tests.js tests/api",
+    "check": "node scripts/check-endpoints.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "mysql2": "^3.11.5"
+  }
+}
