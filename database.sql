@@ -6,6 +6,12 @@
 -- creates things that do not exist yet and never deletes data.
 -- No passwords or sample customers are stored here. Create the first
 -- admin with:  npm run create-admin
+--
+-- IMPORTANT: the CREATE TABLE statements use IF NOT EXISTS, so they do
+-- nothing at all when the table already exists. That means an older
+-- database does NOT pick up columns added to this file later. The
+-- "UPGRADES" section at the bottom fixes that: re-running this script on
+-- an older database adds the missing columns and keeps the data.
 -- =====================================================================
 
 CREATE DATABASE IF NOT EXISTS sifted_cafe_db
@@ -69,3 +75,83 @@ CREATE TABLE IF NOT EXISTS admin_sessions (
   CONSTRAINT fk_admin_sessions_admin
     FOREIGN KEY (admin_id) REFERENCES admins (id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ---------------------------------------------------------------------
+-- UPGRADES FOR OLDER DATABASES
+--
+-- Everything above this line only ever CREATES tables. A database created
+-- from an older version of this file therefore keeps its old columns, and
+-- re-running the script quietly changes nothing (because of IF NOT EXISTS).
+-- That is what causes "Something went wrong on our side." on the admin
+-- login: the server asks for a column the table does not have yet.
+--
+-- Each block below checks information_schema first and only runs the ALTER
+-- when the column really is missing, so this section is safe to run as
+-- often as you like and never deletes data.
+-- Add a new block here whenever you add a column to a CREATE TABLE above.
+-- ---------------------------------------------------------------------
+
+-- admins.last_login_at (NULL for accounts that have never signed in).
+SET @upgrade_sql = (
+  SELECT IF(
+    EXISTS (SELECT 1 FROM information_schema.COLUMNS
+             WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'admins'
+               AND COLUMN_NAME = 'last_login_at'),
+    'SELECT ''upgrades: admins.last_login_at already present'' AS upgrade_note',
+    'ALTER TABLE admins ADD COLUMN last_login_at TIMESTAMP NULL AFTER created_at'
+  )
+);
+PREPARE upgrade_stmt FROM @upgrade_sql;
+EXECUTE upgrade_stmt;
+DEALLOCATE PREPARE upgrade_stmt;
+
+-- reservations.phone: older databases called this column contact_number.
+-- Renaming it keeps the existing numbers instead of making staff re-enter them.
+SET @upgrade_sql = (
+  SELECT IF(
+    EXISTS (SELECT 1 FROM information_schema.COLUMNS
+             WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'reservations'
+               AND COLUMN_NAME = 'phone'),
+    'SELECT ''upgrades: reservations.phone already present'' AS upgrade_note',
+    'ALTER TABLE reservations CHANGE COLUMN contact_number phone VARCHAR(20) NOT NULL'
+  )
+);
+PREPARE upgrade_stmt FROM @upgrade_sql;
+EXECUTE upgrade_stmt;
+DEALLOCATE PREPARE upgrade_stmt;
+
+-- reservations.branch: added after the first version of the schema. Existing
+-- rows have no branch to recover, so they are set to Calamba; staff can correct
+-- a booking from the admin page if that was not the right branch.
+SET @upgrade_sql = (
+  SELECT IF(
+    EXISTS (SELECT 1 FROM information_schema.COLUMNS
+             WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'reservations'
+               AND COLUMN_NAME = 'branch'),
+    'SELECT ''upgrades: reservations.branch already present'' AS upgrade_note',
+    'ALTER TABLE reservations ADD COLUMN branch VARCHAR(40) NOT NULL DEFAULT ''calamba'' AFTER phone'
+  )
+);
+PREPARE upgrade_stmt FROM @upgrade_sql;
+EXECUTE upgrade_stmt;
+DEALLOCATE PREPARE upgrade_stmt;
+
+-- reservations.email: widened from 150 to 254 so it matches the standard
+-- maximum length for an email address.
+SET @upgrade_sql = (
+  SELECT IF(
+    EXISTS (SELECT 1 FROM information_schema.COLUMNS
+             WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'reservations'
+               AND COLUMN_NAME = 'email' AND CHARACTER_MAXIMUM_LENGTH = 254),
+    'SELECT ''upgrades: reservations.email already 254'' AS upgrade_note',
+    'ALTER TABLE reservations MODIFY COLUMN email VARCHAR(254) NULL'
+  )
+);
+PREPARE upgrade_stmt FROM @upgrade_sql;
+EXECUTE upgrade_stmt;
+DEALLOCATE PREPARE upgrade_stmt;
+
+-- The branch column above carries a DEFAULT only so that older rows can be
+-- added safely. New rows always send a branch, so the default is dropped to
+-- make a forgotten branch fail loudly instead of silently becoming Calamba.
+ALTER TABLE reservations ALTER COLUMN branch DROP DEFAULT;
