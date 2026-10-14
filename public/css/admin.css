@@ -26,7 +26,7 @@ body.admin { background: var(--cream-light); min-height: 100vh; }
   border-radius: var(--radius-lg);
   box-shadow: 8px 8px 0 var(--ochre);
 }
-.login-logo { width: 190px; margin: 0 auto 12px; }
+.login-logo { display: block; width: 190px; max-width: 100%; height: auto; margin: 0 auto 12px; } /* height:auto keeps the logo from stretching */
 .login-card h1 { text-align: center; font-size: 1.7rem; margin-bottom: 0.1em; }
 .login-sub { text-align: center; color: var(--ink-soft); margin-bottom: 1.2rem; }
 .login-card form { display: grid; gap: 14px; }
