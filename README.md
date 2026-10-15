@@ -25,6 +25,7 @@ Workbench) · VS Code.
 10. [Troubleshooting](#10-troubleshooting)
 11. [Project structure](#11-project-structure)
 12. [After the owner interview](#12-after-the-owner-interview)
+13. [Deploying to Vercel (optional)](#13-deploying-to-vercel-optional)
 
 ---
 
@@ -150,11 +151,12 @@ TheSiftedCafe/
   public/            index.html, admin.html, css/ (base, style, admin), js/ (api, main, reservation, admin), images/
   server/            server.js, config.js (business rules), database.js, validation.js, listQuery.js,
                      session.js, dbErrors.js, routes/ (reservations, auth), middleware/
+  api/               index.js and [...path].js — Vercel entry points (section 13)
   scripts/           create-admin.js, check-endpoints.js, run-tests.js
   tests/             unit/, api/
   docs/              INTERVIEW_QUESTIONNAIRE, REQUIREMENTS, REQUIREMENTS_TRACEABILITY, DATABASE, API,
                      SECURITY, TESTING, DEVELOPMENT_NOTES
-  database.sql  .env.example  package.json  README.md
+  database.sql  .env.example  package.json  vercel.json  README.md
 ```
 
 ## 12. After the owner interview
@@ -162,3 +164,76 @@ TheSiftedCafe/
 Use [`docs/INTERVIEW_QUESTIONNAIRE.md`](docs/INTERVIEW_QUESTIONNAIRE.md). Then update
 [`docs/REQUIREMENTS.md`](docs/REQUIREMENTS.md), the values in `server/config.js` (branches, hours,
 slot length, limits), and the **TBC** text in `public/index.html`.
+
+## 13. Deploying to Vercel (optional)
+
+Puts the site online at an address like `https://the-sifted-cafe.vercel.app`. Everything above still
+works the same way on your own computer; nothing here is needed for the local version.
+
+### What the two new files do
+
+| File | Why it exists |
+| :-- | :-- |
+| `api/index.js` | Vercel turns every file in `api/` into a serverless function. This one answers `/api`. |
+| `api/[...path].js` | Same app, but for `/api/...` (`/api/health`, `/api/reservations`, …). The file name is a "catch-all": Vercel sends every remaining path segment to it. |
+| `vercel.json` | `cleanUrls` (so `/admin` opens `admin.html`) plus the security headers. On Vercel the HTML and CSS are served straight from the CDN and never pass through Express, so the headers have to be repeated here. |
+
+Both entry points export the **same** Express app from `server/server.js`, which is why there is only
+one copy of the code. Nothing was duplicated.
+
+### Before you start
+
+1. The database must be reachable from the internet. MySQL on your own computer works for local use
+   but **not** from Vercel — use a hosted MySQL (Aiven, PlanetScale, Amazon RDS, Railway, …).
+2. Load `database.sql` into that hosted database and create the admin account with
+   `npm run create-admin` (run it on your computer, pointing at the hosted server).
+
+### Steps
+
+1. Push the project to GitHub (it already is a Git repository).
+2. On Vercel choose **Add New → Project** and import the repository.
+3. Set **Framework Preset** to **Other** and leave the build command empty.
+4. Before the first deploy, add these under **Settings → Environment Variables** (mark them for
+   *Production*; also tick *Preview* if you want preview deployments to work):
+
+   | Variable | Value |
+   | :-- | :-- |
+   | `DB_HOST` | host name of the hosted database |
+   | `DB_PORT` | usually `3306` |
+   | `DB_USER` | database user |
+   | `DB_PASSWORD` | database password |
+   | `DB_NAME` | `sifted_cafe_db` |
+   | `DB_SSL` | `true` — cloud databases need an encrypted connection |
+   | `SESSION_HOURS` | `8` |
+
+5. Deploy, then open **https://your-app.vercel.app/api/health**. It must answer
+   `{"status":"ok","database":"connected"}`. Open **Logs** in Vercel if it says `"error"`.
+6. Check the website and **/admin**, and sign in to the admin page once — that proves the session
+   cookie is being set correctly over HTTPS.
+
+`.env` is never uploaded (it is in `.gitignore`), which is why the values above are typed into the
+Vercel dashboard instead of edited in a file.
+
+### Deploying again after a change
+
+Push to GitHub; Vercel redeploys automatically. Preview deployments get their own address for pull
+requests, so you can check a change without touching the live site.
+
+### Good to know (worth telling the marker)
+
+- **Rate limits.** The login and reservation limits are counted in the memory of one running copy of
+  the app. Vercel runs several copies at once, so a counter restarts more often than on one local
+  server. The limits still work, they are just less exact.
+- **Database pool.** `server/database.js` uses a pool of 2 connections on Vercel and 10 locally, so
+  the many parallel copies do not flood the database.
+- **Free plan.** Vercel's free plan is for personal, non-commercial use only.
+
+### If something goes wrong
+
+| Symptom | Fix |
+| :-- | :-- |
+| `/api/health` says `"database":"unavailable"` | Check the environment variables and that the hosted database allows connections from anywhere. The exact reason is in **Logs**. |
+| `ER_ACCESS_DENIED_ERROR` / login refused | Wrong `DB_USER` or `DB_PASSWORD` in the Vercel settings. |
+| `CERT_HAS_EXPIRED` / `UNABLE_TO_VERIFY_LEAF_SIGNATURE` | The provider uses its own certificate authority. Add its CA certificate as `ca` in the `ssl` option in `server/database.js`. Do **not** set `rejectUnauthorized: false` — that switches the certificate check off. |
+| The website 404s but the API works | Vercel is not serving `public/`. Check the build settings for the project. |
+| Cannot sign in on the deployed site, but it works locally | The login cookie is only marked `Secure` in production, and Vercel sets `NODE_ENV=production` for you. Check that `SESSION_HOURS` is set. |
