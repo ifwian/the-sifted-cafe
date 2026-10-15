@@ -14,7 +14,12 @@ const pool = mysql.createPool({
   password: process.env.DB_PASSWORD || '',
   database: process.env.DB_NAME || 'sifted_cafe_db',
   waitForConnections: true,
-  connectionLimit: 10,
+  // Serverless functions run many copies of this app at once, so keep the
+  // pool small there. On your own computer one process is enough.
+  connectionLimit: process.env.VERCEL ? 2 : 10,
+  // Cloud databases (Vercel deployment) need an encrypted connection.
+  // Set DB_SSL=true in the Vercel environment variables; leave it out locally.
+  ssl: process.env.DB_SSL === 'true' ? { minVersion: 'TLSv1.2', rejectUnauthorized: true } : undefined,
   charset: 'utf8mb4',
   // Return DATE/TIME/TIMESTAMP columns as plain strings ('2026-10-20'),
   // not JavaScript Date objects, so time zones cannot shift the dates.
