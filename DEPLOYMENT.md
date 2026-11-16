@@ -17,31 +17,18 @@ You need: a GitHub account, a Supabase account, a Vercel account (sign in with G
 
 ## B. GitHub and Vercel
 
-1. Install Git, then in this folder:
-   ```
-   git init
-   git add .
-   git commit -m "The Sifted production"
-   ```
-   Check that `.env` files are NOT listed by `git status` (they are ignored).
-2. On github.com: New repository > `TheSifted` > **Private** > Create (do not add a README).
-3. Push (replace YOUR-USER):
-   ```
-   git branch -M main
-   git remote add origin https://github.com/YOUR-USER/TheSifted.git
-   git push -u origin main
-   ```
-4. vercel.com > Add New > **Project** > Import your `TheSifted` repository.
-5. On the configure screen: **Framework Preset: Other**. Leave Build Command and Install Command empty. Output Directory is read from `vercel.json` (`public`).
-6. Open **Environment Variables** and add all four (copy names from `.env.example`):
+1. The code is already on GitHub: **https://github.com/ifwian/the-sifted-cafe** (branch `main`). No `git init` or create-repository step is needed.
+2. vercel.com > Add New > **Project** > Import `ifwian/the-sifted-cafe`.
+3. On the configure screen: **Framework Preset: Other**. Leave Build Command and Install Command empty. Output Directory is read from `vercel.json` (`public`).
+4. Open **Environment Variables** and add all four (copy names from `.env.example`):
    | Name | Value |
    |---|---|
    | `SUPABASE_URL` | Project URL from A7 |
    | `SUPABASE_ANON_KEY` | anon/publishable key |
    | `SUPABASE_SERVICE_ROLE_KEY` | service_role/secret key |
    | `SITE_URL` | your Vercel address, no trailing slash (known after the first deploy: set it, then Redeploy) |
-7. Click **Deploy**. When finished, open the address Vercel shows.
-8. Go back to Supabase **Authentication > URL Configuration** and put that address in *Site URL* and the redirect URL (A4). In Vercel, set `SITE_URL`, then **Deployments > Redeploy**.
+5. Click **Deploy**. When finished, open the address Vercel shows.
+6. Go back to Supabase **Authentication > URL Configuration** and put that address in *Site URL* and the redirect URL (A4). In Vercel, set `SITE_URL`, then **Deployments > Redeploy**.
 
 ## C. Create the first staff account
 1. On your live site: Sign up with the staff member's real email.

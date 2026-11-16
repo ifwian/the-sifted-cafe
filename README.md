@@ -23,6 +23,12 @@ Vercel's PHP support is an unofficial community runtime (extra config, often sta
 * The API calls the database **as the logged-in user**, so Row Level Security applies. The service-role key is used only for private file storage.
 * Business rules (24 h notice, capacity, price, status changes) live in database functions; the API and the form repeat the checks only to give friendly messages.
 
+## Run the website locally
+```
+npm run dev        # http://localhost:3000
+```
+It serves `public/` and `/api/*` with the same handler Vercel uses. Environment variables are read from `.env` or `.env.local` (both git-ignored). No packages needed.
+
 ## Run the tests locally
 ```
 bash tests/run_db_tests.sh      # schema, RLS, 24h rule, concurrency (needs local PostgreSQL)
