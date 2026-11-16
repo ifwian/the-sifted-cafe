@@ -1,0 +1,13 @@
+# Keep line endings consistent between Windows and GitHub.
+* text=auto
+*.js text eol=lf
+*.css text eol=lf
+*.html text eol=lf
+*.md text eol=lf
+*.sh text eol=lf
+*.sql text eol=lf
+*.json text eol=lf
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.pdf binary

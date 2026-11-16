@@ -1,0 +1,12 @@
+{
+  "name": "the-sifted-cafe",
+  "version": "1.0.0",
+  "private": true,
+  "description": "The Sifted Cafe & Bakery - online reservations (static site + Vercel Node functions + Supabase)",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "test": "node --test tests/*.test.js",
+    "test:db": "bash tests/run_db_tests.sh",
+    "dev": "node tests/dev-server.js"
+  }
+}

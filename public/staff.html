@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Staff | The Sifted Cafe</title>
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#2f1c13">
+  <link rel="icon" type="image/png" href="assets/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=Geist:wght@100..900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/staff.css">
+  <link rel="stylesheet" href="css/dash-motion.css">
+</head>
+<body class="sd-page">
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <header class="sd-bar">
+    <div class="sd-wrap sd-bar-inner">
+      <a class="sd-brand" href="index.html">the sifted <span>staff</span></a>
+      <nav class="sd-tabs" aria-label="Staff sections">
+        <a class="sd-tab" id="tab-active" href="staff.html">Reservations<span class="sd-tab-count" id="tab-pending" title="Pending approval" hidden></span></a>
+        <a class="sd-tab" id="tab-archive" href="staff.html?view=archive">Archive<span class="sd-tab-count is-quiet" id="tab-archived" hidden></span></a>
+      </nav>
+      <div class="sd-user">
+        <span class="sd-user-meta"><strong id="staff-name"></strong>Staff</span>
+        <span class="sd-avatar" id="staff-initials" aria-hidden="true"></span>
+        <button class="sd-logout" type="button" id="logout-button"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>Log out</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main" class="sd-wrap sd-main" hidden>
+    <section class="sd-hero sd-hero-archive" id="hero-archive" aria-label="Archive" hidden>
+      <div>
+        <span class="eyebrow">Records</span>
+        <h1>Archive</h1>
+        <p>Archived reservations are kept safely in the database and hidden from the active list. Use <strong>Restore</strong> to bring one back, or <strong>Delete</strong> to remove one permanently.</p>
+      </div>
+    </section>
+    <section class="sd-hero" id="hero-active" aria-label="Today at a glance" hidden>
+      <div>
+        <span class="eyebrow" id="hero-date"></span>
+        <h1 id="hero-title">Welcome back</h1>
+        <p id="hero-text"></p>
+      </div>
+      <div class="sd-metrics">
+        <a class="sd-metric" id="metric-today" href="staff.html"><b>0</b><span>Today</span></a>
+        <a class="sd-metric" id="metric-pending" href="staff.html?status=pending"><b>0</b><span>To approve</span></a>
+        <a class="sd-metric" id="metric-proofs" href="staff.html?payment=proof_submitted"><b>0</b><span>Proofs to check</span></a>
+      </div>
+    </section>
+    <nav class="sd-seg" id="status-seg" aria-label="Filter by status" hidden></nav>
+
+    <section class="sd-panel" id="panel" aria-label="Reservations">
+      <form class="sd-toolbar" id="filter-form" method="get" action="staff.html" role="search">
+        <input type="hidden" name="view" id="f-view" value="">
+        <input type="hidden" name="status" id="f-status" value="">
+        <label class="sd-search"><span class="visually-hidden">Search reservations</span><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg><input type="search" name="q" id="f-q" placeholder="Search name, phone or email" enterkeyhint="search"></label>
+        <label>Branch <select name="branch" id="f-branch"><option value="">All branches</option><option value="calamba">Calamba</option><option value="cabuyao">Cabuyao</option></select></label>
+        <label>Payment <select name="payment" id="f-payment">
+          <option value="">All payments</option><option value="unpaid">Unpaid</option><option value="proof_submitted">Awaiting verification</option><option value="verified">Verified</option><option value="rejected">Rejected</option>
+        </select></label>
+        <label>Date <input type="date" name="date" id="f-date"></label>
+        <div class="sd-toolbar-end">
+          <button type="submit" class="btn btn-primary btn-small">Apply</button>
+          <a class="btn btn-outline btn-small" id="btn-today" href="staff.html">Today</a>
+          <a class="btn btn-ghost btn-small" id="btn-clear" href="staff.html">Clear</a>
+        </div>
+      </form>
+      <p class="muted" id="list-loading" style="padding: var(--sp-4)">Loading reservations...</p>
+      <div class="alert alert-error" id="list-error" hidden style="margin: var(--sp-4)"><span id="list-error-text"></span> <button type="button" class="btn btn-outline btn-small" id="list-retry">Try again</button></div>
+      <div id="list-empty" class="sd-empty" hidden></div>
+      <div class="sd-table-wrap" id="table-wrap" hidden>
+        <table class="sd-table">
+          <caption class="visually-hidden" id="table-caption">Customer reservations</caption>
+          <thead><tr>
+            <th scope="col">Reference</th><th scope="col">Customer</th><th scope="col">Date and time</th>
+            <th scope="col">Guests</th><th scope="col">Amount due</th><th scope="col">Payment</th><th scope="col">Status</th><th scope="col" id="th-archived" hidden>Archived</th><th scope="col"><span class="visually-hidden">Actions</span></th>
+          </tr></thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+      <p class="sd-foot" id="list-foot" hidden></p>
+    </section>
+  </main>
+
+  <dialog id="detail-modal" class="sd-modal" aria-labelledby="detail-modal-title">
+    <div class="sd-modal-head">
+      <h2 id="detail-modal-title">Reservation details</h2>
+      <button type="button" class="sd-modal-x" data-close aria-label="Close">&times;</button>
+    </div>
+    <div id="detail-modal-body" class="sd-modal-body"></div>
+    <div class="sd-modal-foot"><button type="button" class="btn btn-outline btn-small" data-close>Close</button></div>
+  </dialog>
+
+  <dialog id="confirm-modal" class="sd-modal sd-modal-sm" aria-labelledby="confirm-title">
+    <form id="confirm-form">
+      <input type="hidden" id="confirm-id" value="">
+      <input type="hidden" id="confirm-action" value="">
+      <div class="sd-modal-head"><h2 id="confirm-title">Are you sure?</h2><button type="button" class="sd-modal-x" data-close aria-label="Close">&times;</button></div>
+      <div class="sd-modal-body">
+        <p id="confirm-text"></p>
+        <label id="confirm-reason-wrap" hidden>Reason (shown to staff only) <textarea id="confirm-reason" rows="2" maxlength="300" placeholder="e.g. Amount does not match the GCash record"></textarea></label>
+      </div>
+      <div class="sd-modal-foot">
+        <button type="button" class="btn btn-outline btn-small" data-close>Go back</button>
+        <button type="submit" class="btn btn-primary btn-small" id="confirm-submit">Yes</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div id="sd-toasts" class="sd-toasts" popover="manual" aria-live="polite"></div>
+
+  <script src="js/shared.js"></script>
+  <script src="js/staff.js"></script>
+  <script src="js/dash-motion.js"></script>
+</body>
+</html>
