@@ -193,7 +193,8 @@ database, authentication, and file storage.
 4. Set the Supabase Auth *Site URL* to the deployed address and redeploy.
 
 Step-by-step instructions, including creating the first staff account:
-**[DEPLOYMENT.md](DEPLOYMENT.md)**.
+**[DEPLOYMENT.md](DEPLOYMENT.md)**. Day-to-day operations, staff roles, and
+known limits are in **[HANDOVER.md](HANDOVER.md)**.
 
 ## Visit us
 
