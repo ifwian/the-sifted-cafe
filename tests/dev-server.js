@@ -2,12 +2,12 @@
 // Local development server: serves public/ and forwards /api/* to the real Vercel function.
 //   npm run dev   ->   http://localhost:3000
 // Environment variables are loaded from .env and .env.local (both git-ignored).
-// This file is for development only; production uses api/[...path].js on Vercel.
+// This file is for development only; production uses api/router.js on Vercel.
 
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
-const apiHandler = require('../api/[...path].js');
+const apiHandler = require('../api/router.js');
 
 const root = path.join(__dirname, '..', 'public');
 const TYPES = {

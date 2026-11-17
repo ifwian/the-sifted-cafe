@@ -4,9 +4,20 @@
 
 // Sends JSON to the server and gives back { status, data }.
 // status 0 means the server could not be reached at all.
-// The API lives at /api/... on the same site (Vercel Node functions), so the URL is used as it is.
+// The API lives at /api/... on the same site (Vercel Node functions).
+// Vercel only routes one path segment to a function, so nested API paths are
+// sent through /api/router with the original path in the __path parameter.
+// Example: /api/customer/me -> /api/router?__path=customer%2Fme
 function apiUrl(url) {
-  return url;
+  var prefix = '/api/';
+  if (url.indexOf(prefix) !== 0) return url;
+
+  var rest = url.slice(prefix.length);
+  var mark = rest.indexOf('?');
+  var path = mark === -1 ? rest : rest.slice(0, mark);
+  var query = mark === -1 ? '' : rest.slice(mark + 1);
+
+  return '/api/router?__path=' + encodeURIComponent(path) + (query ? '&' + query : '');
 }
 
 // Every failure becomes { status: 0, data: { error: '<what really went wrong>' } }.

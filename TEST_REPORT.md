@@ -30,7 +30,7 @@ Bugs found and fixed by these tests: ambiguous `generate_series` on `smallint` i
 * Real Supabase Auth behaviour (sign-up, login, refresh, "Confirm email" ON, password-reset email and the `#access_token` link).
 * Real Supabase Storage: the signed-upload `PUT` (multipart format copied from supabase-js; the mock accepts it, the real service not yet verified), signed read link for staff.
 * Real PostgREST query syntax (the mock translates the same filters; `or=(...ilike...)` search in particular).
-* Vercel deployment itself: `vercel.json` (`outputDirectory: public`, headers), catch-all function `api/[...path].js`, environment variables, and the Content-Security-Policy (checked only for syntax, not against the live site; if the map or fonts break, loosen `vercel.json` headers).
+* Vercel deployment itself: `vercel.json` (`outputDirectory: public`, headers), single API function `api/router.js` (plus the public `api/config.js`), environment variables, and the Content-Security-Policy (checked only for syntax, not against the live site; if the map or fonts break, loosen `vercel.json` headers).
 * The "production API connectivity" test: **not possible here**.
 * Real mobile devices (only emulated viewport).
 * Staff page `?view=archive`, filters and notes were exercised in API/DB tests but not clicked through in the browser.

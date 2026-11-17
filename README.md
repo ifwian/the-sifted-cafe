@@ -94,7 +94,7 @@ reservation from one dashboard.
 |---|---|
 | **Frontend** | HTML5, CSS3, vanilla JavaScript |
 | **Hosting** | Vercel — static site plus a Node.js serverless function |
-| **API** | `api/[...path].js` → `lib/routes.js`, no npm runtime dependencies |
+| **API** | `api/router.js` → `lib/routes.js`, no npm runtime dependencies |
 | **Database** | Supabase PostgreSQL with Row Level Security |
 | **Auth** | Supabase Auth with HttpOnly cookie sessions |
 | **File storage** | Supabase Storage — private `payment-proofs` bucket |
@@ -107,7 +107,7 @@ Browser (public/)
    │
    │  same-origin /api/*  ·  HttpOnly session cookie
    ▼
-Vercel Node.js function (api/[...path].js → lib/routes.js)
+Vercel Node.js function (api/router.js → lib/routes.js)
    │
    │  Supabase client scoped to the logged-in user
    ▼
@@ -135,7 +135,7 @@ key is used only for private payment-proof storage.
 
 ```text
 public/          the website — pages, styles, scripts, images, menu PDF
-api/             Vercel function entry point (api/[...path].js)
+api/             Vercel function entry points (router + public config)
 lib/             server code — routes, sessions, Supabase client, validation, time
 supabase/        schema.sql, seed data, and migration notes
 tests/           database, API, browser, and page checks
